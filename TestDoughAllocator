@@ -1,0 +1,106 @@
+
+/**
+ * Tests for the DoughAllocator and DoughRectangle classes.
+ * 
+ * @author: Jamie Hand
+ * @date: Mar. 19, 2014
+ * 
+ */
+
+import static org.junit.Assert.*;
+
+import java.util.ArrayList;
+
+import org.junit.Test;
+
+public class TestDoughAllocator {
+
+	@Test
+	public void testMakeSquare() {
+		DoughRectangle square = new DoughRectangle(5);
+
+		assertEquals(square.getLength(), 5);
+		assertEquals(square.getHeight(), 5);
+		assertEquals(square.getArea(), 25);
+		assertTrue(square.isSquare());
+	}
+
+	@Test
+	public void testMakeRectangle() {
+		DoughRectangle rect = new DoughRectangle(5, 3);
+
+		assertEquals(rect.getLength(), 5);
+		assertEquals(rect.getHeight(), 3);
+		assertEquals(rect.getArea(), 15);
+		assertFalse(rect.isSquare());
+	}
+
+	@Test
+	public void testLargest() {
+		DoughAllocator allocator1 = new DoughAllocator(8);
+		DoughAllocator allocator2 = new DoughAllocator(18000);
+		
+		assertEquals(allocator1.largest(), 8);
+		assertEquals(allocator2.largest(), 100);
+	}
+
+	@Test
+	public void testArea() {
+		DoughAllocator allocator = new DoughAllocator(8);
+		assertEquals(allocator.area(), 64);
+	}
+
+	@Test
+	public void test1(){
+		ArrayList<Integer> sizes = new ArrayList<Integer>();
+		sizes.add(5);
+		sizes.add(3);
+
+		DoughAllocator allocator = new DoughAllocator(8);
+		System.out.println("Area before: " + allocator.area());
+		System.out.println("Largest before: " + allocator.largest());
+		for( Integer s: sizes ){
+			System.out.println("-----------");
+			System.out.println("Requesting a square of size: " + s);
+			allocator.get(s);
+			System.out.println("Area: " + allocator.area());
+			System.out.println("Largest: " + allocator.largest());
+		}
+		assertEquals(allocator.area(), 30);
+		assertEquals(allocator.largest(), 3);
+	}
+
+	@Test
+	public void test2(){
+		ArrayList<Integer> sizes = new ArrayList<Integer>();
+		sizes.add(3);
+		sizes.add(3);
+		sizes.add(3);
+		sizes.add(2);
+		sizes.add(2);
+		sizes.add(5);
+		sizes.add(1);
+		sizes.add(1);
+		sizes.add(2);
+		sizes.add(2);
+		sizes.add(2);
+		sizes.add(3);
+		sizes.add(2);
+		sizes.add(1);
+		sizes.add(1);
+
+		DoughAllocator allocator = new DoughAllocator(8);
+		System.out.println("Area before: " + allocator.area());
+		System.out.println("Largest before: " + allocator.largest());
+		for( Integer s: sizes ){
+			System.out.println("-----------");
+			System.out.println("Requesting a square of size: " + s);
+			allocator.get(s);
+			System.out.println("Area: " + allocator.area());
+			System.out.println("Largest: " + allocator.largest());
+		}
+		assertEquals(allocator.area(), 0);
+		assertEquals(allocator.largest(), 0);
+	}
+
+}
