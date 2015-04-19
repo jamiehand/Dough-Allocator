@@ -1,0 +1,92 @@
+/**
+ * Allows creation of rectangles of dough, as well as reporting of the
+ * rectangle's instance variables.
+ * 
+ * @author: Jamie Hand
+ * @date: Mar. 19, 2014
+ * 
+ */
+public class DoughRectangle {
+	/**
+	 * @field len length of the rectangle
+	 * @field ht  height of the rectangle
+	 */
+	private int len; // length
+	private int ht;  // height
+	
+	/**
+	 * Creates a rectangle with height and length of
+	 * different sizes (or equal size if length = height)
+	 * 
+	 * @param length length desired
+	 * @param height height desired
+	 */
+	public DoughRectangle(int length, int height){
+		len = length;
+		ht = height;
+	}
+	
+	/**
+	 * Creates a square with length = height = "side"
+	 * 
+	 * @param side length of side of square desired
+	 */
+	public DoughRectangle(int side){
+		len = side;
+		ht = side;
+	}
+	
+	/**
+	 * Gives the length of the rectangle.
+	 * 
+	 * @return length of the rectangle
+	 */
+	public int getLength(){
+		return len;
+	}
+	
+	/**
+	 * Gives the height of the rectangle.
+	 * 
+	 * @return height of the rectangle.
+	 */
+	public int getHeight(){
+		return ht;
+	}
+	
+	/**
+	 * Gives the area of the rectangle.
+	 * 
+	 * @return area of the rectangle
+	 */
+	public int getArea(){
+		return len * ht;
+	}
+	
+	/**
+	 * Returns the length of whichever side of rectangle is smaller
+	 * (or the length of "length", if both sides are equal).
+	 * 
+	 * @return length of whichever side is smaller
+	 */
+	public int getSmallerSide(){
+		int smallerSide = 0;
+
+		if (getLength() > getHeight()){
+			smallerSide = getHeight();
+		} else {
+			smallerSide = getLength();
+		}
+		return smallerSide;
+	}
+	
+	/**
+	 * Returns true if the rectangle is a square.
+	 * 
+	 * @return true is rectangle is a square
+	 */
+	public boolean isSquare(){
+		return len == ht;
+	}
+
+}
