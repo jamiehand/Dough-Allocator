@@ -1,0 +1,162 @@
+
+/**
+ * Creates an initial DoughRectangle (which is actually a square), and divides it into smaller rectangles,
+ * based on "requests" for squares to be cut from the original rectangle.
+ * 
+ * @author: Jamie Hand
+ * @date: Mar. 19, 2014
+ * 
+ */
+
+import java.util.ArrayList;
+
+public class DoughAllocator {
+	/**
+	 * @field inv an ArrayList of dough in the inventory
+	 */
+	private ArrayList<DoughRectangle> inv = new ArrayList<DoughRectangle>();
+	
+	
+	/**
+	 * Creates an initial DoughRectangle and adds it to the inventory "inv"
+	 * 
+	 * @param size length of one side of the initial rectangle (which is actually a square)
+	 */
+	public DoughAllocator(int size){
+		// Print error message if desired size is not valid.
+		if (!(size>0 && size <= 16000)){
+			System.out.println("Size can only go from 1 to 16,000! Defaulting to size = 100.");
+			DoughRectangle yum = new DoughRectangle(100);
+			inv.add(yum);
+		} else {
+			DoughRectangle yum = new DoughRectangle(size);
+			inv.add(yum);
+		}
+	}
+	
+	/**
+	 * Gives the total area of all rectangles in the DoughAllocator's inventory.
+	 * 
+	 * @return the area of the inventory
+	 */
+	public int area(){
+		int area = 0;
+		for (DoughRectangle r : inv){
+			area += r.getArea();
+		}
+		return area;
+	}
+	
+	/**
+	 * Among the smaller sides of each rectangle, gives the largest.
+	 * (Because whichever side is smaller of a rectangle
+	 * will be the length of the biggest square it can make.)
+	 * 
+	 * @return the side size of the largest possible square that can be made from the inventory
+	 */
+	public int largest(){
+		int largest = 0;
+		for (DoughRectangle r : inv){
+			// If smaller side of rectangle r is larger than the largest
+			// smaller side so far, make it the new largest square possible.
+			if (r.getSmallerSide() > largest){
+				largest = r.getSmallerSide();
+			}
+		}
+		return largest;
+	}
+	
+	/**
+	 * Cuts out a square with side length indicated by the parameter "size".
+	 * Removes one rectangle from the inventory to do this, and returns to the
+	 * inventory whatever is left of that rectangle after cutting a square
+	 * from it (i.e. either one, two, or no rectangles).
+	 * 
+	 * @param size length of one side of the square desired
+	 */
+	public void get(int size){
+		// Print error message if desired size is not valid.
+		if (!(size>0 && size <= largest())){
+			System.out.println("Invalid size! Please select a size "
+					+ "from 1 to " + largest());
+		} else {
+				DoughRectangle rToUse = findRToUse(size);
+				useR(rToUse, size);
+		}
+	}
+	
+	/**
+	 * Finds a rectangle "rToUse" in the inventory "inv" based on its size and the 
+	 * requested size, and returns it to a method that uses it.
+	 * 
+	 * @param size length of one side of the square desired
+	 * @return the rectangle from inventory "inv" to use to cut out the square of requested size
+	 */
+	private DoughRectangle findRToUse(int size){
+		// Check if there is a rectangle exactly the size of the requested square.
+		for ( DoughRectangle rect : inv ){
+			if (rect.isSquare() && (rect.getSmallerSide() == size)){
+				return rect;
+			}
+		}
+		// Check if there is a rectangle w/ one side the size of the requested square.
+		for ( DoughRectangle rect : inv ){
+			if (rect.getSmallerSide() == size){
+				return rect;
+			}
+		}
+		// Otherwise use any rectangle big enough to contain the requested square.
+		for ( DoughRectangle rect : inv ){
+			if (rect.getSmallerSide() > size){
+				return rect;
+			}
+		}
+		// Default return in case the above fail. (This shouldn't happen!)
+		System.out.println("Alert! Method findRToUse defaulted to returning the"
+				+ "first item of inventory. (This should never happen.)");
+		return inv.get(0);
+	}
+	
+	/**
+	 * Removes rToUse from the inventory, cuts desired square from it, and 
+	 * returns to the inventory whatever is left of that rectangle after cutting
+	 * the square (i.e. either one, two, or no rectangles).
+	 * 
+	 * @param rToUse the rectangle found by findRToUse which is a good size to cut desired square from
+	 * @param size length of one side of the square desired
+	 */
+	private void useR(DoughRectangle rToUse, int size){
+		// Remove rectangle (rToUse) from inventory.
+		inv.remove(rToUse);
+		DoughRectangle replacement1 = new DoughRectangle(0);
+		DoughRectangle replacement2 = new DoughRectangle(0);
+		if (rToUse.isSquare() && (rToUse.getSmallerSide() == size)){
+			//rToUse is exactly the right size. Just remove it from inventory.
+		} else if (rToUse.getSmallerSide() == size){
+			//rToUse has one side that is exactly the right size.
+			//Reduce the length of the larger side.
+			if (rToUse.getHeight() > rToUse.getLength()){
+				//Height is the larger side, so it is the side we will reduce.
+				int newHeight = rToUse.getHeight() - size;
+				replacement1 = new DoughRectangle (rToUse.getLength(), newHeight);
+			} else {
+				//Length is the side we will reduce.
+				int newLength = rToUse.getLength() - size;
+				replacement1 = new DoughRectangle (newLength, rToUse.getHeight());	
+			}
+			// Replace rToUse in inventory with the (one) new rectangle.
+			inv.add(replacement1);
+		} else if (rToUse.getSmallerSide() > size){
+			//Both height and length are larger than size requested;
+			//Reduce both height and length.
+			int newHeight = rToUse.getHeight() - size;
+			int newLength = rToUse.getLength() - size;
+			replacement1 = new DoughRectangle (rToUse.getLength(), newHeight);
+			replacement2 = new DoughRectangle (newLength, size);
+			// Replace rToUse in inventory with the (two) new rectangles.
+			inv.add(replacement1);
+			inv.add(replacement2);
+		}
+	}
+	
+}
